@@ -26,6 +26,7 @@ add_library( # Sets the name of the library.
 
              # Provides a relative path to your source file(s).
              vulkan-utils.cpp
+             vulkan_wrapper.cpp
              native-lib.cpp )
 
 # Searches for a specified prebuilt library and stores the path as a

@@ -3,14 +3,16 @@
 //
 
 #pragma once
-#include <vulkan/vulkan.h>
+#include "vulkan_wrapper.h"
 #include <string>
 
 class VulkanApplication {
 public:
-    VkInstance vulkanInstance;
+    VulkanApplication();
+    virtual ~VulkanApplication();
     std::string run();
 private:
+    VkInstance vulkanInstance;
     std::string vulkanInit();
     void vulkanDestroy();
 };
