@@ -3,6 +3,8 @@
 //
 
 #include "vulkan-utils.h"
+#include <vector>
+#include <android/log.h>
 
 VulkanApplication::VulkanApplication() {
     InitVulkan();
@@ -17,6 +19,20 @@ std::string VulkanApplication::run() {
     std::string message = "";
     message += vulkanInit();
     return message;
+}
+
+std::string VulkanApplication::extensionSupport() {
+    std::string ext = "";
+    uint32_t extensionCount = 0;
+    //Request del numero de extensiones disponibles.
+    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+    std::vector<VkExtensionProperties> extensiones(extensionCount);
+    //extensiones.reserve(extensionCount);
+    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensiones.data());
+    for(const auto& extension : extensiones){
+        ext += "\n" + std::string(extension.extensionName) + "\n";
+    }
+    return ext;
 }
 
 std::string VulkanApplication::vulkanInit(){
@@ -39,10 +55,12 @@ std::string VulkanApplication::vulkanInit(){
     createInfo.enabledLayerCount = 0;
     createInfo.ppEnabledLayerNames = NULL;
 
+    std::string msg = extensionSupport();
+
     if(vkCreateInstance(&createInfo, nullptr, &vulkanInstance) == VK_SUCCESS){
-        return "Success!";
+        return msg+"Success!";
     } else {
-        return "Error!";
+        return msg+"Error!";
     }
 
 }

@@ -11,6 +11,7 @@ public:
     VulkanApplication();
     virtual ~VulkanApplication();
     std::string run();
+    std::string extensionSupport();
 private:
     VkInstance vulkanInstance;
     std::string vulkanInit();
