@@ -9,6 +9,13 @@
 #include <vector>
 #include "VDeleter.h"
 
+struct QueueFamilyIndices {
+    int graphicsFamily = -1;
+    bool isComplete(){
+        return graphicsFamily >= 0;
+    }
+};
+
 class VulkanApplication {
 public:
     VulkanApplication();
@@ -18,7 +25,12 @@ public:
     std::string createInstance();
     std::string checkExtensionSupport();
     bool checkValidationSupport();
+    //
     std::string pickPhysicalDevice();
+    int rateDeviceSuitability(VkPhysicalDevice deviceToRate);
+    //
+    std::string createLogicalDevice();
+    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 private:
     VkInstance vulkanInstance;
     void vulkanDestroy();
@@ -53,12 +65,9 @@ private:
     const std::vector<const char*> validationLayers = {"VK_LAYER_KHRONOS_validation"};
     PVEngine::VDeleter<VkInstance> instance {vkDestroyInstance};
     PVEngine::VDeleter<VkDebugReportCallbackEXT> callback {instance, destroyDebuggerReportCallbackExt};
-    const bool enableValidationLayers = true;
-    /*#ifdef NDEBUG
-    const bool enableValidationLayers = false;
-#else
-    const bool enableValidationLayers = true;
-#endif*/
+    PVEngine::VDeleter<VkDevice> logicalDevice{vkDestroyDevice};
+    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+    VkQueue graphicsQueue;
 };
 
 //#ifndef SILDUR_VULKAN_UTILS_H
