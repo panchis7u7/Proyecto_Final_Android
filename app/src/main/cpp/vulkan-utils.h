@@ -14,14 +14,33 @@ public:
     virtual ~VulkanApplication();
     std::string run();
     std::string createInstance();
-    std::string extensionSupport();
+    std::string checkExtensionSupport();
     bool checkValidationSupport();
     std::string pickPhysicalDevice();
 private:
-    bool enableValidationLayers = false;
     VkInstance vulkanInstance;
     void vulkanDestroy();
-    const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
+    VkResult CreateDebugReportCallbackExt();
+    static void destroyDebuggerReportCallbackExt();
+    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
+            VkDebugReportFlagsEXT flags,
+            VkDebugReportObjectTypeEXT objType,
+            uint64_t obj,
+            size_t location,
+            int32_t code,
+            const char* layerPrefix,
+            const char* msg,
+            void* user,
+            void* userData){
+        std::cerr << "Validation Layer: " << msg << std::endl;
+        return VK_FALSE;
+    }
+    const std::vector<const char *> validationLayers = {"VK_LAYER_LUNARG_standard_validation"};
+#ifdef NDEBUG
+    const bool enableValidationLayers = false;
+#else
+    const bool enableValidationLayers = true;
+#endif
 };
 
 //#ifndef SILDUR_VULKAN_UTILS_H

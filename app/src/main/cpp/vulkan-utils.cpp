@@ -20,7 +20,7 @@ std::string VulkanApplication::run() {
     //Create instance, extension support and validation layers.
     message += createInstance();
     //Check extension support.
-    message += extensionSupport();
+    message += checkExtensionSupport();
     //Pick a physical device.
     message += pickPhysicalDevice();
     return message;
@@ -35,6 +35,16 @@ std::string VulkanApplication::createInstance(){
         throw std::runtime_error("validation layers requested, but not available!");
     }
 
+    std::vector<const char*> extensions = {"VK_KHR_surface",
+                                           "VK_KHR_android_surface",
+                                           "VK_EXT_swapchain_colorspace",
+                                           "VK_KHR_get_surface_capabilities2",
+                                           "VK_EXT_debug_report",
+                                           "VK_KHR_get_physical_device_properties2",
+                                           "VK_KHR_external_semaphore_capabilities",
+                                           "VK_KHR_external_memory_capabilities",
+                                           "VK_KHR_external_fence_capabilities"};
+
     VkApplicationInfo appInfo = {};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = "Instance";
@@ -46,8 +56,8 @@ std::string VulkanApplication::createInstance(){
     VkInstanceCreateInfo  createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
-    createInfo.enabledExtensionCount =0;
-    createInfo.ppEnabledExtensionNames = NULL;
+    createInfo.enabledExtensionCount = extensions.size();
+    createInfo.ppEnabledExtensionNames = extensions.data();
     //createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
     //createInfo.ppEnabledLayerNames = validationLayers.data();
     createInfo.enabledLayerCount = 0;
@@ -79,7 +89,7 @@ std::string VulkanApplication::createInstance(){
 //--------------------------------------------------------------------------------------------------
 //Extension support.
 
-std::string VulkanApplication::extensionSupport() {
+std::string VulkanApplication::checkExtensionSupport() {
     std::string ext = "";
     uint32_t extensionCount = 0;
     //Request del numero de extensiones disponibles.
@@ -141,10 +151,6 @@ std::string VulkanApplication::pickPhysicalDevice() {
     }
 
     return "nel";
-
-    if(physicalDevice == VK_NULL_HANDLE){
-        return  "Failed to find a suitable GPU.\n";
-    }
 }
 
 //--------------------------------------------------------------------------------------------------
