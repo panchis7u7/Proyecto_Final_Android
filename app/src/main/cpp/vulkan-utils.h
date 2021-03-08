@@ -50,14 +50,15 @@ private:
         std::cerr << "Validation Layer: " << msg << std::endl;
         return VK_FALSE;
     }
-    const std::vector<const char *> validationLayers = {"VK_LAYER_LUNARG_standard_validation"};
+    const std::vector<const char*> validationLayers = {"VK_LAYER_KHRONOS_validation"};
     PVEngine::VDeleter<VkInstance> instance {vkDestroyInstance};
     PVEngine::VDeleter<VkDebugReportCallbackEXT> callback {instance, destroyDebuggerReportCallbackExt};
-#ifdef NDEBUG
+    const bool enableValidationLayers = true;
+    /*#ifdef NDEBUG
     const bool enableValidationLayers = false;
 #else
     const bool enableValidationLayers = true;
-#endif
+#endif*/
 };
 
 //#ifndef SILDUR_VULKAN_UTILS_H

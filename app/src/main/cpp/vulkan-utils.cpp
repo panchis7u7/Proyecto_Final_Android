@@ -33,9 +33,9 @@ std::string VulkanApplication::run() {
 //Instance and physical device selection.
 
 std::string VulkanApplication::createInstance(){
-    if(enableValidationLayers && !checkValidationSupport()){
-        throw std::runtime_error("validation layers requested, but not available!");
-    }
+    /*if(enableValidationLayers && !checkValidationSupport()){
+       std::cout << "No hay capas de validacion disponibles!" << std::endl;
+    }*/
 
     std::vector<const char*> extensions = {"VK_KHR_surface",
                                            "VK_KHR_android_surface",
@@ -60,7 +60,7 @@ std::string VulkanApplication::createInstance(){
     createInfo.pApplicationInfo = &appInfo;
     createInfo.enabledExtensionCount = extensions.size();
     createInfo.ppEnabledExtensionNames = extensions.data();
-    if(enableValidationLayers){
+    if(checkValidationSupport()){
         std::cout << "Validation Layers are up!" << std:: endl;
         createInfo.enabledLayerCount = validationLayers.size();
         createInfo.ppEnabledLayerNames = validationLayers.data();
@@ -69,19 +69,6 @@ std::string VulkanApplication::createInstance(){
         createInfo.enabledLayerCount = 0;
         createInfo.ppEnabledLayerNames = NULL;
     }
-
-    //Check validation layers.
-    /*VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-    if (enableValidationLayers) {
-        createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-        createInfo.ppEnabledLayerNames = validationLayers.data();
-
-        //populateDebugMessengerCreateInfo(debugCreateInfo);
-        createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&debugCreateInfo;
-    } else {
-        createInfo.enabledLayerCount = 0;
-        createInfo.pNext = nullptr;
-    }*/
 
     if(vkCreateInstance(&createInfo, nullptr, &vulkanInstance) == VK_SUCCESS){
         return "Success at creating instance!\n";
@@ -187,3 +174,6 @@ VkResult VulkanApplication::CreateDebugReportCallbackExt(
     else
         return VK_ERROR_EXTENSION_NOT_PRESENT;
 }
+
+//--------------------------------------------------------------------------------------------------
+
