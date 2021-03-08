@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "VDeleter.h"
 
 class VulkanApplication {
 public:

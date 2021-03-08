@@ -25,6 +25,7 @@ add_library( # Sets the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
+             VDeleter.h
              vulkan-utils.cpp
              vulkan_wrapper.cpp
              native-lib.cpp )
