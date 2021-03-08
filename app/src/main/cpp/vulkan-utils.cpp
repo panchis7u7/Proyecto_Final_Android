@@ -19,6 +19,8 @@ std::string VulkanApplication::run() {
     std::string message = "";
     //Create instance, extension support and validation layers.
     message += createInstance();
+    //Setup validation layers.
+    setupDebugCallback();
     //Check extension support.
     message += checkExtensionSupport();
     //Pick a physical device.
@@ -58,10 +60,15 @@ std::string VulkanApplication::createInstance(){
     createInfo.pApplicationInfo = &appInfo;
     createInfo.enabledExtensionCount = extensions.size();
     createInfo.ppEnabledExtensionNames = extensions.data();
-    //createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-    //createInfo.ppEnabledLayerNames = validationLayers.data();
-    createInfo.enabledLayerCount = 0;
-    createInfo.ppEnabledLayerNames = NULL;
+    if(enableValidationLayers){
+        std::cout << "Validation Layers are up!" << std:: endl;
+        createInfo.enabledLayerCount = validationLayers.size();
+        createInfo.ppEnabledLayerNames = validationLayers.data();
+    } else {
+        std::cout << "Validation Layers aren't up!" << std::endl;
+        createInfo.enabledLayerCount = 0;
+        createInfo.ppEnabledLayerNames = NULL;
+    }
 
     //Check validation layers.
     /*VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
@@ -154,3 +161,29 @@ std::string VulkanApplication::pickPhysicalDevice() {
 }
 
 //--------------------------------------------------------------------------------------------------
+
+void VulkanApplication::setupDebugCallback() {
+    if(!enableValidationLayers)
+        return;
+    VkDebugReportCallbackCreateInfoEXT createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+    createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
+    createInfo.pfnCallback = debugCallback;
+
+    if(CreateDebugReportCallbackExt(instance, &createInfo, nullptr, callback.replace()) != VK_SUCCESS)
+        throw std::runtime_error("Failed to setup debug callback!");
+    else
+        std::cout << "Debug callback setup successful" << std::endl;
+}
+
+VkResult VulkanApplication::CreateDebugReportCallbackExt(
+        VkInstance instance,
+        const VkDebugReportCallbackCreateInfoEXT* pCreateInfo,
+        const VkAllocationCallbacks* pAllocator,
+        VkDebugReportCallbackEXT* pCallback){
+    auto func = (PFN_vkCreateDebugReportCallbackEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
+    if(func != nullptr)
+        return func(instance, pCreateInfo, pAllocator, pCallback);
+    else
+        return VK_ERROR_EXTENSION_NOT_PRESENT;
+}
