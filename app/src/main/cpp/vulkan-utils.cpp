@@ -12,7 +12,7 @@ VulkanApplication::VulkanApplication() {
 }
 
 VulkanApplication::~VulkanApplication() {
-    //vkDestroyInstance(vulkanInstance, NULL);
+    vkDestroyInstance(vulkanInstance, NULL);
 }
 
 std::string VulkanApplication::run() {
@@ -20,8 +20,8 @@ std::string VulkanApplication::run() {
     //Create instance, extension support and validation layers.
     message += createInstance();
     //Setup validation layers.
-    //if(checkValidationSupport())
-    //setupDebugCallback();
+    if(checkValidationSupport())
+    setupDebugCallback();
     //Check extension support.
     message += checkExtensionSupport();
     //Pick a physical device.
@@ -35,10 +35,6 @@ std::string VulkanApplication::run() {
 //Instance and physical device selection.
 
 std::string VulkanApplication::createInstance(){
-    /*if(enableValidationLayers && !checkValidationSupport()){
-       std::cout << "No hay capas de validacion disponibles!" << std::endl;
-    }*/
-
     std::vector<const char*> extensions = {"VK_KHR_surface",
                                            "VK_KHR_android_surface",
                                            "VK_EXT_swapchain_colorspace",
@@ -49,19 +45,18 @@ std::string VulkanApplication::createInstance(){
                                            "VK_KHR_external_memory_capabilities",
                                            "VK_KHR_external_fence_capabilities"};
 
-    VkApplicationInfo appInfo = {};
-    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    VkApplicationInfo appInfo = {VK_STRUCTURE_TYPE_APPLICATION_INFO};
     appInfo.pApplicationName = "Instance";
-    appInfo.pEngineName = "Mi Motor";
+    appInfo.pEngineName = "No Engine";
     appInfo.engineVersion = VK_MAKE_VERSION(1,0,0);
     appInfo.applicationVersion = VK_MAKE_VERSION(1,0,0);
     appInfo.apiVersion = VK_API_VERSION_1_1;
 
-    VkInstanceCreateInfo  createInfo = {};
-    createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    VkInstanceCreateInfo  createInfo = {VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
     createInfo.pApplicationInfo = &appInfo;
     createInfo.enabledExtensionCount = extensions.size();
     createInfo.ppEnabledExtensionNames = extensions.data();
+
     if(checkValidationSupport()){
         std::cout << "Validation Layers are up!" << std:: endl;
         createInfo.enabledLayerCount = validationLayers.size();
@@ -125,21 +120,20 @@ bool VulkanApplication::checkValidationSupport() {
     return false;
 }
 
-/*void VulkanApplication::setupDebugCallback() {
+void VulkanApplication::setupDebugCallback() {
     if(checkValidationSupport())
     //if(!enableValidationLayers)
         return;
-    VkDebugReportCallbackCreateInfoEXT createInfo = {};
-    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+    VkDebugReportCallbackCreateInfoEXT createInfo = {VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT};
     createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
     createInfo.pfnCallback = debugCallback;
 
-    if(CreateDebugReportCallbackExt(instance, &createInfo, nullptr, callback.replace()) != VK_SUCCESS)
+    if(CreateDebugReportCallbackExt(instance, &createInfo, nullptr, nullptr) != VK_SUCCESS)
         throw std::runtime_error("Failed to setup debug callback!");
     else
         std::cout << "Debug callback setup successful" << std::endl;
-}*/
-/*
+}
+
 VkResult VulkanApplication::CreateDebugReportCallbackExt(
         VkInstance instance,
         const VkDebugReportCallbackCreateInfoEXT* pCreateInfo,
@@ -150,7 +144,7 @@ VkResult VulkanApplication::CreateDebugReportCallbackExt(
         return func(instance, pCreateInfo, pAllocator, pCallback);
     else
         return VK_ERROR_EXTENSION_NOT_PRESENT;
-}*/
+}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -209,6 +203,7 @@ int VulkanApplication::rateDeviceSuitability(VkPhysicalDevice deviceToRate){
 }
 
 //--------------------------------------------------------------------------------------------------
+//Create logical device.
 
 std::string VulkanApplication::createLogicalDevice() {
     QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
