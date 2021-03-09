@@ -12,17 +12,16 @@ VulkanApplication::VulkanApplication() {
 }
 
 VulkanApplication::~VulkanApplication() {
-    vkDestroyInstance(vulkanInstance, NULL);
+    //vkDestroyInstance(vulkanInstance, NULL);
 }
 
 std::string VulkanApplication::run() {
-    vulkanInstance = VK_NULL_HANDLE;
     std::string message = "";
     //Create instance, extension support and validation layers.
     message += createInstance();
     //Setup validation layers.
-    if(checkValidationSupport())
-    setupDebugCallback();
+    //if(checkValidationSupport())
+    //setupDebugCallback();
     //Check extension support.
     message += checkExtensionSupport();
     //Pick a physical device.
@@ -126,7 +125,7 @@ bool VulkanApplication::checkValidationSupport() {
     return false;
 }
 
-void VulkanApplication::setupDebugCallback() {
+/*void VulkanApplication::setupDebugCallback() {
     if(checkValidationSupport())
     //if(!enableValidationLayers)
         return;
@@ -139,8 +138,8 @@ void VulkanApplication::setupDebugCallback() {
         throw std::runtime_error("Failed to setup debug callback!");
     else
         std::cout << "Debug callback setup successful" << std::endl;
-}
-
+}*/
+/*
 VkResult VulkanApplication::CreateDebugReportCallbackExt(
         VkInstance instance,
         const VkDebugReportCallbackCreateInfoEXT* pCreateInfo,
@@ -151,7 +150,7 @@ VkResult VulkanApplication::CreateDebugReportCallbackExt(
         return func(instance, pCreateInfo, pAllocator, pCallback);
     else
         return VK_ERROR_EXTENSION_NOT_PRESENT;
-}
+}*/
 
 //--------------------------------------------------------------------------------------------------
 
@@ -165,8 +164,7 @@ std::string VulkanApplication::pickPhysicalDevice() {
         return "No device found!\n";
     }
 
-    std::vector<VkPhysicalDevice> physical_devices;
-    physical_devices.reserve(deviceCount);
+    std::vector<VkPhysicalDevice> physical_devices(deviceCount);
     if (VK_SUCCESS != vkEnumeratePhysicalDevices(vulkanInstance, &deviceCount, physical_devices.data()) ||
         deviceCount == 0) {
         std::cout << "Failed enumerating Vulkan physical devices\n";
@@ -192,7 +190,7 @@ std::string VulkanApplication::pickPhysicalDevice() {
 int VulkanApplication::rateDeviceSuitability(VkPhysicalDevice deviceToRate){
     int score = 0;
 
-    QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+    QueueFamilyIndices indices = findQueueFamilies(deviceToRate);
     if(!indices.isComplete())
         return 0;
 
@@ -237,7 +235,7 @@ std::string VulkanApplication::createLogicalDevice() {
     createInfo.ppEnabledExtensionNames = nullptr;
     createInfo.pEnabledFeatures = &deviceFeatures;
 
-    if(vkCreateDevice(physicalDevice, &createInfo, nullptr, logicalDevice.replace()) != VK_SUCCESS)
+    if(vkCreateDevice(physicalDevice, &createInfo, nullptr, &logicalDevice) != VK_SUCCESS)
         throw std::runtime_error("Failed to create logical device!\n");
 
     vkGetDeviceQueue(logicalDevice, indices.graphicsFamily, 0, &graphicsQueue);
@@ -253,14 +251,14 @@ std::string VulkanApplication::createLogicalDevice() {
 QueueFamilyIndices VulkanApplication::findQueueFamilies(VkPhysicalDevice device) {
     QueueFamilyIndices indices;
     uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);//
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);//
 
     std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
 
     int i = 0;
     for(const auto& queueFamily : queueFamilies){
-        if(queueFamily.queueCount > 0 && queueFamily.queueFlags &&VK_QUEUE_GRAPHICS_BIT){
+        if(queueFamily.queueCount > 0 && queueFamily.queueFlags && VK_QUEUE_GRAPHICS_BIT){
             indices.graphicsFamily = i;
         }
         if (indices.isComplete())

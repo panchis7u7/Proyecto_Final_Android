@@ -25,15 +25,10 @@ public:
     std::string createInstance();
     std::string checkExtensionSupport();
     bool checkValidationSupport();
-    //
     std::string pickPhysicalDevice();
     int rateDeviceSuitability(VkPhysicalDevice deviceToRate);
-    //
     std::string createLogicalDevice();
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-private:
-    VkInstance vulkanInstance;
-    void vulkanDestroy();
 
     VkResult CreateDebugReportCallbackExt(
             VkInstance instance,
@@ -62,12 +57,17 @@ private:
         std::cerr << "Validation Layer: " << msg << std::endl;
         return VK_FALSE;
     }
+
+private:
+
+    VkInstance vulkanInstance = VK_NULL_HANDLE;
+    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+    VkQueue graphicsQueue = VK_NULL_HANDLE;
+    VkDevice logicalDevice = VK_NULL_HANDLE;
     const std::vector<const char*> validationLayers = {"VK_LAYER_KHRONOS_validation"};
     PVEngine::VDeleter<VkInstance> instance {vkDestroyInstance};
-    PVEngine::VDeleter<VkDebugReportCallbackEXT> callback {instance, destroyDebuggerReportCallbackExt};
-    PVEngine::VDeleter<VkDevice> logicalDevice{vkDestroyDevice};
-    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-    VkQueue graphicsQueue;
+    //PVEngine::VDeleter<VkDebugReportCallbackEXT> callback {instance, destroyDebuggerReportCallbackExt};
+    PVEngine::VDeleter<VkDevice> vLogicalDevice{vkDestroyDevice};
 };
 
 //#ifndef SILDUR_VULKAN_UTILS_H
