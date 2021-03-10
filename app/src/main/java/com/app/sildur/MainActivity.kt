@@ -11,7 +11,12 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.vkdeveloper_fragment.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,32 +26,31 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        val toolbar: Toolbar = toolbar
         setSupportActionBar(toolbar)
 
         //app_bar_main
-        //val fab: FloatingActionButton = findViewById(R.id.fab)
-        /*fab.setOnClickListener { view ->
+        val fab: FloatingActionButton = fab
+        fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
-        }*/
+        }
 
         //Activity_main.xml
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        val drawerLayout: DrawerLayout = drawer_layout
         //Activity_main.xml -> Nav_view
-        val navView: NavigationView = findViewById(R.id.nav_view)
+        val navView: NavigationView = nav_view
         //Content_main.xml
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
 
-        appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.nav_developer), drawerLayout)
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_developer), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
         // Example of a call to a native method
-        findViewById<TextView>(R.id.vk_message).text = stringFromJNI()
+        //vk_message.text = stringFromJNI()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
