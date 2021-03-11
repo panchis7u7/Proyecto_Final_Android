@@ -1,4 +1,4 @@
-package com.app.sildur.ui.vkDeveloperFragment
+package com.app.sildur.ui.viewModels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
