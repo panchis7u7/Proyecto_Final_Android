@@ -32,7 +32,7 @@ class VkDeveloperFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val model = ViewModelProvider(requireActivity()).get(VulkanSharedDeveloperMessageViewModel::class.java)
         vkSharedMessageViewModel.m_extensions.observe(viewLifecycleOwner, Observer { item ->
-            vk_message.setText(item)
+            tvVulkanExtensions.setText(item)
         })
     }
 }
