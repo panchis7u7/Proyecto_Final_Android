@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
 import androidx.navigation.NavArgument
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -15,6 +17,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.app.sildur.ui.viewModels.VulkanSharedDeveloperMessageViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -29,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var listener: NavController.OnDestinationChangedListener
     private lateinit var dev_message: String
+    private val viewModel: VulkanSharedDeveloperMessageViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +43,8 @@ class MainActivity : AppCompatActivity() {
         } catch (e: IOException){
             Toast.makeText(this, "Error al inicializar vulkan!: ${e.message}", Toast.LENGTH_LONG)
         }
+
+        viewModel.setExtensions(dev_message)
 
         val toolbar: Toolbar = toolbar
         setSupportActionBar(toolbar)
@@ -66,8 +72,7 @@ class MainActivity : AppCompatActivity() {
         listener = NavController.OnDestinationChangedListener{controller, destination, arguments ->
             when(destination.id){
                 R.id.nav_developer -> {
-                    val argument = NavArgument.Builder().setDefaultValue(dev_message).build()
-                    destination.addArgument("vkStatus", argument)
+
                 }
             }
         }
