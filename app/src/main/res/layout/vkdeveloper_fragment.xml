@@ -116,7 +116,7 @@
                             android:layout_height="match_parent"
                             android:textColor="@color/black"
                             android:textSize="18dp"
-                            android:text="Vilkan Validation Layers!"
+                            android:text="Vulkan Validation Layers!"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
