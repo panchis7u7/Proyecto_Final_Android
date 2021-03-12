@@ -89,7 +89,7 @@ std::string VulkanApplication::checkExtensionSupport() {
     //extensiones.reserve(extensionCount);
     vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensiones.data());
     for(const auto& extension : extensiones){
-        ext += "\t" + std::string(extension.extensionName) + "\n";
+        ext += std::string(extension.extensionName) + "\n";
     }
     return ext;
 }
